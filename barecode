@@ -120,13 +120,6 @@ void FloodFill()
         i++;
     }
 
-    for (int i = 0; i <= j; i++)
-    {
-        g<<"flood["<<i<<"][0] =" <<flood[i][0]<<endl;
-        g<<"flood["<<i<<"][0] =" <<flood[i][1]<<endl;
-        g<<"flood["<<i<<"][0] =" <<flood[i][2]<<endl << endl;
-    }
-
     /// this is buggy as hell
     i = 0;
     while(true)
@@ -342,8 +335,10 @@ void start_game()
             for (int j = 0; j < i; j++)
             {
                 ok = 0;
-                if(bomb[j][0] == bomb[i][0] and bomb[j][1] == bomb[i][1])
+                if(bomb[j][0] == bomb[i][0] and bomb[j][1] == bomb[i][1]){
                     ok = 1;
+                    break;
+                }
             }
         }while (ok == 1);
 
@@ -351,9 +346,6 @@ void start_game()
 
 
 
-
-//        int bombX = bomb[i][0];
-//        int bombY = bomb[i][1];
             bombX = bomb[i][0];
             bombY = bomb[i][1];
 
