@@ -23,9 +23,9 @@ unsigned int cursorX = 14, cursorY = 14;
 enum eDirection {STOP, LEFT, RIGHT, UP, DOWN};
 eDirection dir;
 
-unsigned long long int scale = 30, no_bomb = 80;
+unsigned long long int scale = 30, no_bomb = 180;
 long long int map_arr[30][30][2];
-unsigned long long int  bomb[80][2], flood[30*30-80][3];/// number
+unsigned long long int  bomb[180][2], flood[30*30-180][3];/// number
                                                         /// x coordinate
                                                         /// y coordinate
 
@@ -46,8 +46,8 @@ void FloodFill()
     int j = 1, i = 0;;
     while(true)
     {
-        x = flood[j][1];
-        y = flood[j][2];
+        x = flood[i][1];
+        y = flood[i][2];
 
 
         if(y-1>=0 and  !map_arr[x][y-1][0] and !map_arr[x][y-1][1]){
@@ -114,34 +114,31 @@ void FloodFill()
             j++;
         }
 
-        if (!flood[j-1][0]){
+        if (!flood[i-1][0]){
            break;
         }
         i++;
-        j--;
-
     }
 
-//    g << "j=" << j << endl;
-//    for (int i = 0; i <= n; i++)
-//    {
-//        g<<"flood["<<i<<"][0] =" <<flood[i][0]<<endl;
-//        g<<"flood["<<i<<"][0] =" <<flood[i][1]<<endl;
-//        g<<"flood["<<i<<"][0] =" <<flood[i][1]<<endl << endl;
-//    }
+    for (int i = 0; i <= j; i++)
+    {
+        g<<"flood["<<i<<"][0] =" <<flood[i][0]<<endl;
+        g<<"flood["<<i<<"][0] =" <<flood[i][1]<<endl;
+        g<<"flood["<<i<<"][0] =" <<flood[i][2]<<endl << endl;
+    }
+
     /// this is buggy as hell
-    /*
-    flood[0][0] = 1;
+    i = 0;
     while(true)
     {
-        if (flood[i][0] == 0)
+        if (flood[i-1][0] == 0)
             break;
 
         x = flood[i][1];
         y = flood[i][2];
 
         if(map_arr[x][y-1][0]>0)
-            map_arr[x][y-2][1] = 1;
+            map_arr[x][y-1][1] = 1;
 
         if(map_arr[x-1][y-1][0]>0)
             map_arr[x-1][y-1][1] = 1;
@@ -169,24 +166,25 @@ void FloodFill()
 
     ///
 
-/*
+
 
     /// deletes the data
-    while (flood[j][0])
+    i=0;
+    while (flood[i][0])
     {
         flood[i][0] = 0;
         flood[i][1] = 0;
         flood[i][2] = 0;
         i++;
      }
-*/
+
 
 }
 
 
 void logic()
 {
-    //control movement
+    ///control movement
     if (dir == LEFT)
         cursorX--;
     else if (dir == RIGHT)
@@ -195,7 +193,7 @@ void logic()
         cursorY--;
     else if (dir == DOWN)
         cursorY++;
-    //end of control movement
+    ///end of control movement
 
     if (enter == true){
         if(map_arr[cursorX][cursorY][0] == -1 and map_arr[cursorX][cursorY][1] != 1)
