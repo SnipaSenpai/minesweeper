@@ -23,9 +23,9 @@ unsigned int cursorX = 14, cursorY = 14;
 enum eDirection {STOP, LEFT, RIGHT, UP, DOWN};
 eDirection dir;
 
-unsigned long long int scale = 30, no_bomb = 180;
+unsigned long int scale = 30, no_bomb = 100;
 long long int map_arr[30][30][2];
-unsigned long long int  bomb[180][2], flood[30*30-180][3];/// number
+unsigned long long int  bomb[100][2], flood[30*30-100][3];/// number
                                                         /// x coordinate
                                                         /// y coordinate
 
@@ -120,7 +120,7 @@ void FloodFill()
         i++;
     }
 
-    /// this is buggy as hell
+    /// this is buggy as hell /// not anymore ))
     i = 0;
     while(true)
     {
@@ -130,28 +130,28 @@ void FloodFill()
         x = flood[i][1];
         y = flood[i][2];
 
-        if(map_arr[x][y-1][0]>0)
+        if(map_arr[x][y-1][0]>0 and y-1>=0)
             map_arr[x][y-1][1] = 1;
 
-        if(map_arr[x-1][y-1][0]>0)
+        if(map_arr[x-1][y-1][0]>0 and x-1>= 0 and y-1>=0)
             map_arr[x-1][y-1][1] = 1;
 
-        if(map_arr[x+1][y-1][0]>0)
+        if(map_arr[x+1][y-1][0]>0 and x+1 < scale and y-1>=0)
             map_arr[x+1][y-1][1] = 1;
 
-        if(map_arr[x-1][y][0]>0)
+        if(map_arr[x-1][y][0]>0 and x-1 >= 0)
             map_arr[x-1][y][1] = 1;
 
-        if(map_arr[x+1][y][0]>0)
+        if(map_arr[x+1][y][0]>0 and x+1 < scale)
             map_arr[x+1][y][1] = 1;
 
-        if(map_arr[x-1][y+1][0]>0)
+        if(map_arr[x-1][y+1][0]>0 and x-1 >= 0 and y+1< scale)
             map_arr[x-1][y+1][1] = 1;
 
-        if(map_arr[x+1][y+1][0]>0)
+        if(map_arr[x+1][y+1][0]>0 and x+1 < scale and y+1 < scale)
             map_arr[x+1][y+1][1] = 1;
 
-        if(map_arr[x][y+1][0]>0)
+        if(map_arr[x][y+1][0]>0 and y+1 < scale)
             map_arr[x][y+1][1] = 1;
 
         i++;
@@ -380,7 +380,26 @@ void start_game()
     system("CLS");
  }
 
+void clean()
+{
+    for (int y = 0; y <= scale; y++){
+        for (int x = 0; x <= scale; x++){
+            map_arr[x][y][0] = 0;
+            map_arr[x][y][1] = 0;
 
+            if (y+x<=scale*scale - no_bomb){
+                flood[y][0] = 0;
+                flood[y][1] = 0;
+                flood[y][2] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i <= no_bomb; i++){
+        bomb[i][0] = 0;
+        bomb[i][1] = 1;
+    }
+}
 int main()
 {
 
@@ -395,5 +414,10 @@ int main()
             graphics();
         }
     }
+    gameOver = false;
+    clean();
+    cout << "YOU LOST!!";
+    Sleep(2000);
+    main();
     return 0;
 }
