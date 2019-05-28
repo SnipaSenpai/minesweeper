@@ -26,9 +26,22 @@ eDirection dir;
 unsigned long int scale = 30, no_bomb = 100;
 long long int map_arr[30][30][2];
 unsigned long long int  bomb[100][2], flood[30*30-100][3];/// number
-                                                        /// x coordinate
+                                                         /// x coordinate
                                                         /// y coordinate
 
+// bugs : trash in left up corner
+// to do: change flood so that it has  [scale*scale-no_bomb][2]
+//        the first discovered block should not have a mine beneath it
+
+
+//used for discovering new blocks
+/* HOW IT WORKS
+    let the fist cell be of coordinates cursorX and cursorY
+    check if the surrounding blocks are empty
+    store the empty blocks in an array
+    after checking all the 6 surrounding blocks
+    let the fist cell of the next step be the next one stored in flood
+*/
 
 void FloodFill()
 {
@@ -46,8 +59,13 @@ void FloodFill()
     int j = 1, i = 0;;
     while(true)
     {
+
         x = flood[i][1];
         y = flood[i][2];
+
+        if (!flood[i][0]){
+           break;
+        }
 
 
         if(y-1>=0 and  !map_arr[x][y-1][0] and !map_arr[x][y-1][1]){
@@ -113,18 +131,16 @@ void FloodFill()
             map_arr[x-1][y-1][1] = 1;
             j++;
         }
-
-        if (!flood[i-1][0]){
-           break;
-        }
-        i++;
+         i++;
     }
 
-    /// this is buggy as hell /// not anymore ))
+    // could probably implement this while in the previous loop
+    // the difference between the 2 is that the fist one discovers the empty blocks and the one below shows the values surrounding the empty cells
+
     i = 0;
     while(true)
     {
-        if (flood[i-1][0] == 0)
+        if (flood[i][0] == 0)
             break;
 
         x = flood[i][1];
@@ -156,6 +172,7 @@ void FloodFill()
 
         i++;
     }
+
 
     ///
 
@@ -315,19 +332,25 @@ int control()
     }
 }
 
+/* generates the start game layout ( boombs , value of blocks, etc)*/
 void start_game()
 {
    // unsigned int x , y;
    //bomb generator
    cout << "creating the start layout"<< endl;
+
     bool ok = 0;
             int bombX;
             int bombY;
+
     for (int i = 0; i < no_bomb; i++)
     {
+        //useless debugging tool
         system("CLS");
         cout <<  (i*100)/no_bomb<<"% done"<< endl;
-        //this do while checks if it placed a bomb on the same spot as another spot
+
+
+        //this do while checks if a bomb was placed within another bomb
         do{
 
             bomb[i][0] = rand()% scale;
@@ -345,7 +368,7 @@ void start_game()
         map_arr[bomb[i][0]][bomb[i][1]][0] = -1;
 
 
-
+            // the code below calculates the value of the block that surround a bomb
             bombX = bomb[i][0];
             bombY = bomb[i][1];
 
@@ -380,6 +403,8 @@ void start_game()
     system("CLS");
  }
 
+
+ // this function is used to clean the diff arrays / variables when the game restarts
 void clean()
 {
     for (int y = 0; y <= scale; y++){
@@ -400,13 +425,14 @@ void clean()
         bomb[i][1] = 1;
     }
 }
+
 int main()
 {
 
     srand(time(0));
     start_game();
     cout <<"   READY TO PLAY???"<< endl;
-    cout <<"   IF SO PRESS ANY BUTTON TO PLAY"<< endl;
+    cout <<"   IF SO PRESS, ANY BUTTON TO PLAY"<< endl;
 
     while (gameOver == false){
         if( control()){
@@ -414,6 +440,7 @@ int main()
             graphics();
         }
     }
+
     gameOver = false;
     clean();
     cout << "YOU LOST!!";
